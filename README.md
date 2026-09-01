@@ -16,12 +16,14 @@ and every module centre compared against the matrix. See
 
 ## What this is, and what it is not
 
-[`third_party/qrcodegen`](third_party/qrcodegen) — Project Nayuki's library,
-vendored byte-identical — decides **which modules are dark**.
-[`src/qrstyle.c`](src/qrstyle.c) decides **what a dark module looks like**, and
-it cannot change the first answer. Every style here is a rendering choice over a
-matrix that is already correct, which means a style that will not scan is a
-rendering bug and never a standards question.
+Two halves, and the line between them is the whole design.
+[`src/qrcodegen.c`](src/qrcodegen.c) decides **which modules are dark** — the
+encoding, the masking, the Reed-Solomon. [`src/qrstyle.c`](src/qrstyle.c)
+decides **what a dark module looks like**, and it only ever reads that matrix.
+
+Nothing in the styling layer can change which modules are dark. That is what
+makes the whole thing tractable: a style that will not scan is a rendering bug
+in one file, never a question about the standard.
 
 The one thing that constrains every shape: a decoder samples the **centre** of
 each module, and finds the code at all by the dark/light run through the middle
@@ -30,7 +32,7 @@ of a finder pattern. Everything below is shaped around those two facts.
 - No heap. The caller owns every buffer.
 - No static state. Nothing is kept between calls.
 - No floating point in the renderer. One module is 256 units.
-- 11.7 KB of flash for both libraries on an ESP32-S3, 0 bytes of `.data` and `.bss`.
+- 11.7 KB of flash on an ESP32-S3, with `.data` and `.bss` both at zero.
 
 ## Quick start
 
@@ -55,15 +57,15 @@ if (QrStyle_EncodeText(url, &cfg, tmp, qr, 10, NULL) &&
     QrStyle_Render(qr, &cfg, &target, &box);
 ```
 
-Two files to add to your build:
+Two translation units and one include directory:
 
 ```
+src/qrcodegen.c
 src/qrstyle.c
-third_party/qrcodegen/qrcodegen.c
 ```
 
-**ESP-IDF.** Point `EXTRA_COMPONENT_DIRS` at [`esp-idf/`](esp-idf), or copy its
-two directories into your project's `components/`.
+**ESP-IDF.** Point `EXTRA_COMPONENT_DIRS` at [`esp-idf/`](esp-idf), or copy
+[`esp-idf/qrstyle`](esp-idf/qrstyle) into your project's `components/`.
 
 **Host.** `make` builds the preview tool; `.\build.ps1` does the same on
 Windows.
@@ -548,10 +550,10 @@ exactly what a control is for.
 
 | | text | data | bss |
 |---|---|---|---|
-| `qrstyle` | 6.1 KB | 0 | 0 |
-| `qrcodegen` | 5.6 KB | 0 | 0 |
+| `qrstyle.c` | 6.1 KB | 0 | 0 |
+| `qrcodegen.c` | 5.6 KB | 0 | 0 |
 
-Plus the caller's two qrcodegen buffers — `qrcodegen_BUFFER_LEN_FOR_VERSION(n)`
+Plus the caller's two encode buffers — `qrcodegen_BUFFER_LEN_FOR_VERSION(n)`
 bytes each, 408 at version 10, 3918 at version 40 — and whatever the logo weighs.
 Cap `max_version` at what the payload needs; version 40 is 7.8 KB of RAM for a
 symbol nothing here is asking for.
@@ -559,26 +561,23 @@ symbol nothing here is asking for.
 ## Layout
 
 ```
-src/qrstyle.{c,h}          the library
-third_party/qrcodegen/     Nayuki's library, byte-identical, MIT
-examples/preview.c         renders the examples, then checks them
-examples/logo_tori.h       the sprite, generated
-tools/logo-to-c.py         image -> C header (needs Pillow; not part of any build)
-esp-idf/                   two ESP-IDF components
-assets/                    the sprite and the rendered examples
+src/qrcodegen.{c,h}   encoding: which modules are dark
+src/qrstyle.{c,h}     rendering: what a dark module looks like
+examples/preview.c    renders the examples, then reads them back
+examples/logo_tori.h  the sprite, generated
+tools/logo-to-c.py    image -> C header (needs Pillow; not part of any build)
+esp-idf/qrstyle/      an ESP-IDF component wrapping both units
+assets/               the sprite and the rendered examples
 ```
 
 ## Licensing
 
-There is no repository licence, so the code here is under default copyright.
+There is no repository licence, so this code is under default copyright.
 
-[`third_party/qrcodegen`](third_party/qrcodegen) is the exception and is **not**
-covered by that: it is Project Nayuki's library under the MIT licence, vendored
-unmodified, and its notice is retained in
-[`third_party/qrcodegen/LICENSE`](third_party/qrcodegen/LICENSE) and in the
-header of each of its source files. Keeping those intact is a condition of using
-it at all. The pin, the checksums and the reasoning are in
-[`third_party/qrcodegen/README.md`](third_party/qrcodegen/README.md).
+`src/qrcodegen.c` and `src/qrcodegen.h` are the exception. They are Project
+Nayuki's QR Code generator under the MIT licence, and the licence text sits at
+the top of both files. It has to stay there — MIT's one condition is that the
+notice travels with the code — and it covers those two files only.
 
 The Kansas City Current colours in the examples are used to demonstrate a
 palette; no affiliation, and no club mark is reproduced here.

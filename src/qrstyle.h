@@ -1,12 +1,12 @@
 /*
  * qrstyle -- artistic rendering for QR codes produced by qrcodegen.
  *
- * qrcodegen (third_party/qrcodegen) answers "which modules are dark". This answers
- * "what does a dark module look like", and nothing here can change the first
- * answer: the vendored library is byte-identical to upstream and stays that
- * way, so every style below is a rendering choice over a matrix that is
- * already correct. A style that will not scan is a style that drew the right
- * matrix badly, which is a bug in this file and not in the standard.
+ * qrcodegen.c answers "which modules are dark". This answers "what does a dark
+ * module look like", and nothing here can change the first answer -- the
+ * styling layer only ever READS that matrix. Every style below is therefore a
+ * rendering choice over a matrix that is already correct, and a style that will
+ * not scan is a style that drew the right matrix badly: a bug in this file, and
+ * never a question about the standard.
  *
  * THE ONE INVARIANT. A decoder samples the CENTRE of each module, and finds
  * the code at all by the 1:1:3:1:1 dark/light run through the middle of a

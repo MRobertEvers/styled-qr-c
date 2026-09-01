@@ -18,8 +18,8 @@
  * Build it with `make examples`, or `.\build.ps1` on Windows -- both are
  * one call to the compiler:
  *
- *   cc -O2 -Isrc -Ithird_party/qrcodegen -Iexamples -o preview \
- *      third_party/qrcodegen/qrcodegen.c src/qrstyle.c examples/preview.c
+ *   cc -O2 -Isrc -Iexamples -o preview \
+ *      src/qrcodegen.c src/qrstyle.c examples/preview.c
  *
  * Then `./preview assets/examples` rewrites the images in the README.
  */
@@ -113,10 +113,10 @@ png_chunk(FILE *f, const char *type, const uint8_t *data, size_t len)
 /*
  * A PNG with STORED deflate blocks -- no compression at all.
  *
- * The alternative is linking zlib into a preview tool, on a machine whose only
- * compiler is the one this repo vendors for the bake tools. A 560x560 preview
- * is 940 KB uncompressed and it is written to a scratch directory, so the
- * trade is a megabyte of temporary file against a dependency in the build.
+ * The alternative is linking zlib, which would make a library that has no
+ * dependencies build a tool that has one. A 560x560 preview is 940 KB
+ * uncompressed, so the trade is a megabyte on disk against the whole claim on
+ * the front of the README.
  */
 static bool
 png_write_rgb(const char *path, const uint8_t *rgb, int w, int h)

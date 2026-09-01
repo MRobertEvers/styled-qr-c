@@ -1,13 +1,2 @@
 * text=auto
-
-# The vendored library is checked out byte-for-byte, on every platform.
-#
-# third_party/qrcodegen/README.md publishes the md5 of these two files as the
-# proof that they are upstream's. Line-ending normalisation would make that
-# claim false on a Windows clone while leaving the content correct, which is the
-# worst of both -- a checksum that fails for a reason nobody can see.
-third_party/qrcodegen/qrcodegen.c -text
-third_party/qrcodegen/qrcodegen.h -text
-third_party/qrcodegen/LICENSE     -text
-
 *.png binary

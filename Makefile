@@ -8,8 +8,8 @@
 
 CC      ?= cc
 CFLAGS  ?= -O2 -std=c99 -Wall -Wextra
-INCLUDE  = -Isrc -Ithird_party/qrcodegen -Iexamples
-SRCS     = third_party/qrcodegen/qrcodegen.c src/qrstyle.c examples/preview.c
+INCLUDE  = -Isrc -Iexamples
+SRCS     = src/qrcodegen.c src/qrstyle.c examples/preview.c
 OUT      = build/preview
 TEXT    ?= https://github.com/MRobertEvers/styled-qr-c
 
@@ -17,7 +17,7 @@ TEXT    ?= https://github.com/MRobertEvers/styled-qr-c
 
 all: $(OUT)
 
-$(OUT): $(SRCS) src/qrstyle.h third_party/qrcodegen/qrcodegen.h examples/logo_tori.h
+$(OUT): $(SRCS) src/qrstyle.h src/qrcodegen.h examples/logo_tori.h
 	@mkdir -p build
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $(SRCS)
 

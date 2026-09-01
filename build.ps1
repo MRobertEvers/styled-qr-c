@@ -35,10 +35,9 @@ $Exe = Join-Path $Root "build\preview.exe"
 
 & $CcPath -O2 -std=c99 -Wall -Wextra `
     -I (Join-Path $Root "src") `
-    -I (Join-Path $Root "third_party\qrcodegen") `
     -I (Join-Path $Root "examples") `
     -o $Exe `
-    (Join-Path $Root "third_party\qrcodegen\qrcodegen.c") `
+    (Join-Path $Root "src\qrcodegen.c") `
     (Join-Path $Root "src\qrstyle.c") `
     (Join-Path $Root "examples\preview.c")
 if ($LASTEXITCODE -ne 0) { throw "compile failed" }
