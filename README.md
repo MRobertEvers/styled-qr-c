@@ -4,6 +4,11 @@ Artistic QR codes in C99, with no dependencies and no allocation. Shaped
 modules, styled finder patterns, gradients, and a logo in the middle paid for by
 the error correction level — rendered straight into an RGB565 framebuffer.
 
+**[Try it in the browser →](https://mrobertevers.github.io/styled-qr-c/)** Type
+any text, or use the shortcuts for a URL, Wi-Fi network, email, phone, SMS,
+contact or location, and get a code with Tori in the middle. The page runs this
+library compiled to WebAssembly; nothing you type leaves it.
+
 | | | | |
 |---|---|---|---|
 | ![KC / Teal, a styled QR code with the Tori sprite at its centre](assets/examples/09-kc-teal.png) | ![Liquid, a styled QR code with the Tori sprite at its centre](assets/examples/03-liquid.png) | ![Night, a styled QR code with the Tori sprite at its centre](assets/examples/07-night.png) | ![KC / Match Red, a styled QR code with the Tori sprite at its centre](assets/examples/11-kc-red.png) |
@@ -69,6 +74,13 @@ src/qrstyle.c
 
 **Host.** `make` builds the preview tool; `.\build.ps1` does the same on
 Windows.
+
+**Browser.** `make web` compiles the same two files, plus
+[`web/qrstyle_web.c`](web/qrstyle_web.c), into a 28 KB standalone
+`docs/qrstyle.wasm` with no imports at all — no Emscripten JS glue, no libc
+calls out to the page. [`docs/`](docs) is the
+[GitHub Pages demo](https://mrobertevers.github.io/styled-qr-c/) around it, and
+serves as-is from any static host.
 
 ## The knobs
 
@@ -567,6 +579,8 @@ examples/preview.c    renders the examples, then reads them back
 examples/logo_tori.h  the sprite, generated
 tools/logo-to-c.py    image -> C header (needs Pillow; not part of any build)
 esp-idf/qrstyle/      an ESP-IDF component wrapping both units
+web/qrstyle_web.c     the wasm entry points for the browser demo
+docs/                 the GitHub Pages demo, and the built qrstyle.wasm
 assets/               the sprite and the rendered examples
 ```
 

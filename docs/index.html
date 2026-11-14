@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>styled-qr-c</title>
+<meta name="description" content="Styled QR codes with Tori in the middle, rendered in your browser by the styled-qr-c C library compiled to WebAssembly.">
+<link rel="icon" type="image/png" href="tori.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <img class="mark" src="tori.png" alt="" width="33" height="45">
+  <div>
+    <h1>styled-qr-c</h1>
+    <p class="sub">Styled QR codes with Tori in the middle. Rendered by the C library itself, compiled to WebAssembly. Your text never leaves this page.</p>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel compose" aria-label="What to encode">
+    <div class="kinds" role="tablist" aria-label="Kind of code">
+      <button role="tab" data-kind="text">Text</button>
+      <button role="tab" data-kind="url">URL</button>
+      <button role="tab" data-kind="wifi">Wi-Fi</button>
+      <button role="tab" data-kind="email">Email</button>
+      <button role="tab" data-kind="phone">Phone</button>
+      <button role="tab" data-kind="sms">SMS</button>
+      <button role="tab" data-kind="contact">Contact</button>
+      <button role="tab" data-kind="location">Location</button>
+    </div>
+
+    <form id="fields" class="fields" autocomplete="off" onsubmit="return false"></form>
+
+    <details class="payload">
+      <summary>Encoded payload <span id="bytes" class="muted"></span></summary>
+      <pre id="payload"></pre>
+    </details>
+
+    <h2 class="label">Style</h2>
+    <div id="styles" class="styles" role="radiogroup" aria-label="Style"></div>
+  </section>
+
+  <section class="panel result" aria-label="QR code">
+    <div class="stage" id="stage">
+      <canvas id="qr" width="1" height="1" aria-label="Generated QR code"></canvas>
+      <p id="empty" class="empty" hidden></p>
+    </div>
+    <dl class="stats" id="stats">
+      <div><dt>Version</dt><dd id="s-version">–</dd></div>
+      <div><dt>ECC level</dt><dd id="s-ecl">–</dd></div>
+      <div><dt>Contrast</dt><dd id="s-contrast">–</dd></div>
+      <div><dt>Logo / budget</dt><dd id="s-logo">–</dd></div>
+    </dl>
+    <p id="check" class="check"></p>
+    <div class="actions">
+      <button id="download" class="primary">Download PNG</button>
+      <button id="copy">Copy image</button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <a href="https://github.com/MRobertEvers/styled-qr-c">Source on GitHub</a>
+  <span class="muted">· C99, no heap, no dependencies. The same code that draws to an ESP32's panel draws this canvas.</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
